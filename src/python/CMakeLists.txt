@@ -45,18 +45,23 @@ if(BUILD_PYTHON_PACKAGE)
     # Those directives are only used when creating a standalone `udmp_parser` python package
     #
     target_include_directories(udmp_parser PRIVATE ../lib)
-    install(TARGETS udmp_parser LIBRARY DESTINATION .)
-    install(DIRECTORY udmp_parser-stubs DESTINATION .)
+    if(UDMP_PARSER_INSTALL)
+        install(TARGETS udmp_parser LIBRARY DESTINATION .)
+        install(DIRECTORY udmp_parser-stubs DESTINATION .)
+    endif()
 else()
     #
     # This is the general case, when built from the root cmakefile
     #
     target_include_directories(udmp_parser PRIVATE $<TARGET_PROPERTY:udmp-parser,INTERFACE_INCLUDE_DIRECTORIES>)
-    install(TARGETS udmp_parser DESTINATION bindings/python)
 
-    if(MSVC)
-        install(FILES $<TARGET_PDB_FILE:udmp_parser> DESTINATION bindings/python OPTIONAL)
-    endif(MSVC)
+    if(UDMP_PARSER_INSTALL)
+        install(TARGETS udmp_parser DESTINATION bindings/python)
+
+        if(MSVC)
+            install(FILES $<TARGET_PDB_FILE:udmp_parser> DESTINATION bindings/python OPTIONAL)
+        endif(MSVC)
+    endif()
 endif()
 
 if(WIN32)
